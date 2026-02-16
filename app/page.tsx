@@ -150,24 +150,27 @@ export default function Dashboard() {
                     <p className="text-sm text-gray-500">{stageItems.length} items</p>
                   </div>
                   <div className="p-4 space-y-3 min-h-[400px]">
-                    {stageItems.map(item => (
-                      <div key={item.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
-                        <div className="font-medium text-gray-900 text-sm mb-2">{item.title}</div>
-                        <div className="text-xs text-gray-500">
-                          <div>ID: {item.id}</div>
-                          <div>Updated: {new Date(item.updated).toLocaleDateString()}</div>
-                        </div>
-                        {Object.keys(item.metadata).length > 0 && (
-                          <div className="mt-2 pt-2 border-t border-gray-100">
-                            <div className="text-xs text-gray-600">
-                              {Object.entries(item.metadata).map(([key, value]) => (
-                                <div key={key}><span className="font-medium">{key}:</span> {String(value)}</div>
-                              ))}
-                            </div>
+                    {stageItems.map(item => {
+                      const meta = item.metadata || {};
+                      return (
+                        <div key={item.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
+                          <div className="font-medium text-gray-900 text-sm mb-2">{item.title}</div>
+                          <div className="text-xs text-gray-500">
+                            <div>ID: {item.id}</div>
+                            <div>Updated: {new Date(item.updated).toLocaleDateString()}</div>
                           </div>
-                        )}
-                      </div>
-                    ))}
+                          {Object.keys(meta).length > 0 && (
+                            <div className="mt-2 pt-2 border-t border-gray-100">
+                              <div className="text-xs text-gray-600">
+                                {Object.entries(meta).map(([key, value]) => (
+                                  <div key={key}><span className="font-medium">{key}:</span> {String(value)}</div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                     {stageItems.length === 0 && (
                       <div className="text-center text-gray-400 text-sm py-8">No items</div>
                     )}
