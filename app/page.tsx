@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import fs from 'fs';
-import path from 'path';
 
 interface Item {
   id: string;
