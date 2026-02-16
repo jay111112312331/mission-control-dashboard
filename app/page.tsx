@@ -41,8 +41,15 @@ export default function Dashboard() {
     try {
       const response = await fetch('/api/data');
       const data = await response.json();
-      setItems(data.items);
-      setPipelines(data.pipelines);
+      setItems(Array.isArray(data.items) ? data.items : []);
+      const nextPipelines = data.pipelines && data.pipelines.pipelines ? data.pipelines : null;
+      setPipelines(nextPipelines);
+      if (nextPipelines) {
+        const keys = Object.keys(nextPipelines.pipelines || {});
+        if (keys.length > 0 && !keys.includes(selectedPipeline)) {
+          setSelectedPipeline(keys[0]);
+        }
+      }
       setLoading(false);
     } catch (error) {
       console.error('Failed to load data:', error);
@@ -58,7 +65,7 @@ export default function Dashboard() {
     );
   }
 
-  if (!pipelines) {
+  if (!pipelines || !pipelines.pipelines || Object.keys(pipelines.pipelines).length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-gray-600">No pipelines configured</div>
@@ -67,6 +74,14 @@ export default function Dashboard() {
   }
 
   const pipeline = pipelines.pipelines[selectedPipeline];
+  if (!pipeline) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600">Pipeline not found</div>
+      </div>
+    );
+  }
+
   const pipelineItems = items.filter(i => i.pipeline === selectedPipeline);
 
   return (
